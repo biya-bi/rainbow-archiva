@@ -1,0 +1,13 @@
+version: '3.8'
+name: archiva
+services:
+  archiva:
+    image: xetusoss/archiva:v2.2.10
+    ports:
+      - 1010:8080
+    volumes:
+      - type: volume
+        source: archiva-data-vol
+        target: /archiva-data
+volumes:
+  archiva-data-vol:
