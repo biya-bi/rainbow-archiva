@@ -8,6 +8,14 @@ git clone ${GIT_REPOPOSITORY_URL} .
 
 source target/maven-archiver/pom.properties
 
+ARTIFACT_REPOSITORY_ID=`cat /run/secrets/archiva/id`
 ARTIFACT_REPOSITORY_URL=`cat /run/secrets/archiva/url`
 
-/maven/mvnw deploy:deploy-file -Dfile=target/${artifactId}-${version}.jar -DpomFile=pom.xml -DrepositoryId=archiva.internal -Durl=${ARTIFACT_REPOSITORY_URL}
+/maven/mvnw deploy:deploy-file \
+    -Dfile=target/${artifactId}-${version}.jar \
+    -DpomFile=pom.xml \
+    -DrepositoryId=${ARTIFACT_REPOSITORY_ID} \
+    -Durl=${ARTIFACT_REPOSITORY_URL} \
+    -DgroupId=${groupId} \
+    -DartifactId=${artifactId} \
+    -Dversion=${version}
