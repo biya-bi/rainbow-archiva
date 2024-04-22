@@ -9,5 +9,11 @@ services:
       - type: volume
         source: archiva-data-vol
         target: /archiva-data
+  deployer:
+    build:
+      context: ./deployer
+    volumes:
+      - ./secrets/dev/git/url:/run/secrets/git/url
+      - ./secrets/dev/archiva/url:/run/secrets/archiva/url
 volumes:
   archiva-data-vol:
