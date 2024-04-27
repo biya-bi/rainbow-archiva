@@ -3,6 +3,7 @@ name: archiva
 services:
   archiva:
     image: xetusoss/archiva:v2.2.10
+    restart: always
     ports:
       - 1010:8080
     volumes:
