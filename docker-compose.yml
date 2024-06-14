@@ -1,6 +1,26 @@
 version: '3.8'
 name: archiva
 services:
+  postgres:
+    image: postgres:16.2
+    hostname: postgres
+    restart: always
+    environment:
+      - POSTGRES_USER_FILE=/run/secrets/postgres/user
+      - POSTGRES_PASSWORD_FILE=/run/secrets/postgres/password
+      - POSTGRES_DB_FILE=/run/secrets/postgres/db
+    shm_size: 128mb
+    volumes:
+      - ./secrets/dev/postgres/:/run/secrets/postgres/
+      - type: volume
+        source: postgres_data
+        target: /var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U \"$(cat /run/secrets/postgres/user)\""]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 10s
   archiva:
     image: xetusoss/archiva:v2.2.10
     restart: always
@@ -16,5 +36,31 @@ services:
     volumes:
       - ./secrets/dev/git/url:/run/secrets/git/url
       - ./secrets/dev/archiva/url:/run/secrets/archiva/url
+  artifactory:
+    image: releases-docker.jfrog.io/jfrog/artifactory-oss:7.84.14
+    entrypoint: ["/opt/jfrog/artifactory/scripts/main.sh"]
+    restart: always
+    hostname: artifactory
+    environment:
+      - NODE_ID=artifactory
+      - DATABASE_URL_FILE=/run/secrets/artifactory/postgres/url
+      - DATABASE_USERNAME_FILE=/run/secrets/postgres/user
+      - DATABASE_PASSWORD_FILE=/run/secrets/postgres/password
+    ports:
+     - 18082:8082
+    volumes:
+      - ./artifactory/system-template.yaml:/opt/jfrog/artifactory/templates/system-template.yaml
+      - ./artifactory/main.sh:/opt/jfrog/artifactory/scripts/main.sh
+      - ./secrets/dev/artifactory/master.key:/opt/jfrog/artifactory/var/etc/security/master.key
+      - ./secrets/dev/artifactory/postgres/url:/run/secrets/artifactory/postgres/url
+      - ./secrets/dev/postgres:/run/secrets/postgres/
+      - type: volume
+        source: jfrog_artifactory
+        target: /opt/jfrog/artifactory
+    depends_on:
+      postgres:
+        condition: service_healthy
 volumes:
   archiva-data-vol:
+  postgres_data:
+  jfrog_artifactory:
