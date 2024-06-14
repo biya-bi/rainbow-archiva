@@ -21,21 +21,13 @@ services:
       timeout: 5s
       retries: 5
       start_period: 10s
-  archiva:
-    image: xetusoss/archiva:v2.2.10
-    restart: always
-    ports:
-      - 9010:8080
-    volumes:
-      - type: volume
-        source: archiva-data-vol
-        target: /archiva-data
   deployer:
     build:
       context: ./deployer
     volumes:
       - ./secrets/dev/git/url:/run/secrets/git/url
-      - ./secrets/dev/archiva/url:/run/secrets/archiva/url
+      - ./secrets/dev/artifactory/maven/id:/run/secrets/artifactory/maven/id
+      - ./secrets/dev/artifactory/maven/url:/run/secrets/artifactory/maven/url
   artifactory:
     image: releases-docker.jfrog.io/jfrog/artifactory-oss:7.84.14
     entrypoint: ["/opt/jfrog/artifactory/scripts/main.sh"]
@@ -61,6 +53,5 @@ services:
       postgres:
         condition: service_healthy
 volumes:
-  archiva-data-vol:
   postgres_data:
   jfrog_artifactory:

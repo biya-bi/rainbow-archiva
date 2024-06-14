@@ -8,8 +8,8 @@ git clone ${GIT_REPOPOSITORY_URL} .
 
 source target/maven-archiver/pom.properties
 
-ARTIFACT_REPOSITORY_ID=`cat /run/secrets/archiva/id`
-ARTIFACT_REPOSITORY_URL=`cat /run/secrets/archiva/url`
+ARTIFACT_REPOSITORY_ID=`cat /run/secrets/artifactory/maven/id`
+ARTIFACT_REPOSITORY_URL=`cat /run/secrets/artifactory/maven/url`
 
 /maven/mvnw deploy:deploy-file \
     -Dfile=target/${artifactId}-${version}.jar \
