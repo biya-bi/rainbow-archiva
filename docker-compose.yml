@@ -30,7 +30,7 @@ services:
       - ./secrets/dev/artifactory/maven/url:/run/secrets/artifactory/maven/url
   artifactory:
     image: releases-docker.jfrog.io/jfrog/artifactory-oss:7.84.14
-    entrypoint: ["/opt/jfrog/artifactory/scripts/main.sh"]
+    entrypoint: ["/opt/jfrog/artifactory/scripts/run.sh"]
     restart: always
     hostname: artifactory
     environment:
@@ -42,8 +42,9 @@ services:
      - 18082:8082
     volumes:
       - ./artifactory/system-template.yaml:/opt/jfrog/artifactory/templates/system-template.yaml
-      - ./artifactory/main.sh:/opt/jfrog/artifactory/scripts/main.sh
-      - ./secrets/dev/artifactory/master.key:/opt/jfrog/artifactory/var/etc/security/master.key
+      - ./artifactory/run.sh:/opt/jfrog/artifactory/scripts/run.sh
+      - ./secrets/dev/artifactory/security/master.key:/opt/jfrog/artifactory/var/etc/security/master.key
+      - ./secrets/dev/artifactory/security/join.key:/opt/jfrog/artifactory/var/etc/security/join.key
       - ./secrets/dev/artifactory/postgres/url:/run/secrets/artifactory/postgres/url
       - ./secrets/dev/postgres:/run/secrets/postgres/
       - type: volume
