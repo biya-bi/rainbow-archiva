@@ -1,6 +1,8 @@
 #!/bin/bash
 
-function process_template() {
+set -eu
+
+process_template() {
     allow_non_postgre_sql_placeholder="{ALLOW_NON_POSTGRE_SQL}"
     database_type_placeholder="{DATABASE_TYPE}"
     database_driver_placeholder="{DATABASE_DRIVER}"
@@ -28,7 +30,7 @@ function process_template() {
 
 }
 
-function to_boolean() {
+to_boolean() {
     value=$1
     if [  -z ${value} ]; then
         value=false
@@ -42,7 +44,7 @@ function to_boolean() {
     echo ${value}
 }
 
-function get_or_default() {
+get_or_default() {
     value=$1
     default=$2
     if [  -z ${value} ]; then
@@ -55,7 +57,7 @@ function get_or_default() {
 system_template_yaml=/opt/jfrog/artifactory/templates/system-template.yaml
 system_yaml=/opt/jfrog/artifactory/var/etc/system.yaml
 
-allow_non_postgre_sql=`to_boolean ${ALLOW_NON_POSTGRE_SQL}`
+allow_non_postgre_sql=`to_boolean ${ALLOW_NON_POSTGRE_SQL:-}`
 database_type=`get_or_default ${DATABASE_TYPE} postgresql`
 database_driver=`get_or_default ${DATABASE_DRIVER} org.postgresql.Driver`
 

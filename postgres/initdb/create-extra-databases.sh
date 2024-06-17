@@ -2,7 +2,7 @@
 
 set -eu
 
-docker_process_sql() {
+process_sql() {
 	local query_runner=( psql -v ON_ERROR_STOP=1 --username "${POSTGRES_USER}" --no-password --no-psqlrc )
 	if [ -n "${POSTGRES_DB}" ]; then
 		query_runner+=( --dbname "${POSTGRES_DB}" )
@@ -15,19 +15,19 @@ create_database() {
 	local database=$1
 	local dbAlreadyExists
 	dbAlreadyExists="$(
-		POSTGRES_DB= docker_process_sql --dbname postgres --set db="${database}" --tuples-only <<-'EOSQL'
+		POSTGRES_DB= process_sql --dbname postgres --set db="${database}" --tuples-only <<-'EOSQL'
 			SELECT 1 FROM pg_database WHERE datname = :'db' ;
 		EOSQL
 	)"
 	if [ -z "$dbAlreadyExists" ]; then
-		POSTGRES_DB= docker_process_sql --dbname postgres --set db="${database}" <<-'EOSQL'
+		POSTGRES_DB= process_sql --dbname postgres --set db="${database}" <<-'EOSQL'
 			CREATE DATABASE :"db" ;
 		EOSQL
 		printf '\n'
 	fi
 }
 
-get_extra_databases() {
+get_databases() {
 	local databases_file=`echo "${1:-}" | xargs`
 	if [ -n "${databases_file}" ]; then
 		if [ -f "${databases_file}" ]; then
@@ -44,8 +44,8 @@ get_extra_databases() {
 	fi
 }
 
-create_extra_databases() {
-	local databases=`get_extra_databases ${1:-}`
+create_databases() {
+	local databases=`get_databases ${1:-}`
 	if [ -n "${databases}" ]; then
 		for database in $(echo ${databases}| tr ',' ' '); do
 			create_database ${database}
@@ -53,4 +53,4 @@ create_extra_databases() {
 	fi
 }
 
-create_extra_databases "${POSTGRES_EXTRA_DBS_FILE:-}"
+create_databases "${POSTGRES_EXTRA_DBS_FILE:-}"
