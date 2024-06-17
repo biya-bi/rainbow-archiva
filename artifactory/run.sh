@@ -1,8 +1,6 @@
 #!/bin/bash
 
 function process_template() {
-    node_id_placeholder="{NODE_ID}"
-
     allow_non_postgre_sql_placeholder="{ALLOW_NON_POSTGRE_SQL}"
     database_type_placeholder="{DATABASE_TYPE}"
     database_driver_placeholder="{DATABASE_DRIVER}"
@@ -13,17 +11,14 @@ function process_template() {
     input_file=$1
     output_file=$2
 
-    node_id=$3
+    allow_non_postgre_sql=$3
+    database_type=$4
+    database_driver=$5
+    database_url=$6
+    database_username=$7
+    database_password=$8
 
-    allow_non_postgre_sql=$4
-    database_type=$5
-    database_driver=$6
-    database_url=$7
-    database_username=$8
-    database_password=$9
-
-    sed -e s/${node_id_placeholder}/${node_id}/g \
-        -e s/${allow_non_postgre_sql_placeholder}/${allow_non_postgre_sql}/g \
+    sed -e s/${allow_non_postgre_sql_placeholder}/${allow_non_postgre_sql}/g \
         -e s/${database_type_placeholder}/${database_type}/g \
         -e s/${database_driver_placeholder}/${database_driver}/g \
         -e s/${database_url_placeholder}/${database_url}/g \
@@ -71,7 +66,6 @@ database_password=`cat ${DATABASE_PASSWORD_FILE}`
 process_template \
     ${system_template_yaml} \
     ${system_yaml} \
-    ${NODE_ID} \
     ${allow_non_postgre_sql} \
     ${database_type} \
     ${database_driver} \

@@ -36,7 +36,6 @@ services:
     restart: always
     hostname: artifactory-oss
     environment:
-      - NODE_ID=artifactory-oss
       - DATABASE_URL_FILE=/run/secrets/artifactory/oss/postgres/url
       - DATABASE_USERNAME_FILE=/run/secrets/postgres/user
       - DATABASE_PASSWORD_FILE=/run/secrets/postgres/password
@@ -61,7 +60,6 @@ services:
     restart: always
     hostname: artifactory-jcr
     environment:
-      - NODE_ID=artifactory-jcr
       - DATABASE_URL_FILE=/run/secrets/artifactory/jcr/postgres/url
       - DATABASE_USERNAME_FILE=/run/secrets/postgres/user
       - DATABASE_PASSWORD_FILE=/run/secrets/postgres/password

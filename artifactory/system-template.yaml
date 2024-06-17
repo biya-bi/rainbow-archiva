@@ -36,7 +36,7 @@ shared:
     node:
         ## A unique id to identify this node.
         ## Default auto generated at startup.
-        id: "{NODE_ID}"
+        #id:
         ## Default auto resolved by startup script
         #ip:
     ## Sets this node as primary in HA installation
