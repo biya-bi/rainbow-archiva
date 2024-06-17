@@ -9,31 +9,13 @@ services:
       - POSTGRES_USER_FILE=/run/secrets/postgres/user
       - POSTGRES_PASSWORD_FILE=/run/secrets/postgres/password
       - POSTGRES_DB_FILE=/run/secrets/postgres/db
+      - POSTGRES_EXTRA_DBS_FILE=/run/secrets/postgres/extra_dbs
     shm_size: 128mb
     volumes:
-      - ./secrets/dev/postgres/:/run/secrets/postgres/
+      - ./secrets/dev/postgres/:/run/secrets/postgres
+      - ./postgres/initdb:/docker-entrypoint-initdb.d
       - type: volume
         source: postgres_data
-        target: /var/lib/postgresql/data
-    healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U \"$(cat /run/secrets/postgres/user)\" -d \"$(cat /run/secrets/postgres/db)\""]
-      interval: 10s
-      timeout: 5s
-      retries: 5
-      start_period: 10s
-  postgres-jcr:
-    image: postgres:16.2
-    hostname: postgres-jcr
-    restart: always
-    environment:
-      - POSTGRES_USER_FILE=/run/secrets/postgres/user
-      - POSTGRES_PASSWORD_FILE=/run/secrets/postgres/password
-      - POSTGRES_DB_FILE=/run/secrets/postgres/db
-    shm_size: 128mb
-    volumes:
-      - ./secrets/dev/jcr/postgres/:/run/secrets/postgres/
-      - type: volume
-        source: postgres_jcr_data
         target: /var/lib/postgresql/data
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U \"$(cat /run/secrets/postgres/user)\" -d \"$(cat /run/secrets/postgres/db)\""]
@@ -48,14 +30,14 @@ services:
       - ./secrets/dev/git/url:/run/secrets/git/url
       - ./secrets/dev/artifactory/maven/id:/run/secrets/artifactory/maven/id
       - ./secrets/dev/artifactory/maven/url:/run/secrets/artifactory/maven/url
-  artifactory:
+  artifactory-oss:
     image: releases-docker.jfrog.io/jfrog/artifactory-oss:7.84.14
     entrypoint: ["/opt/jfrog/artifactory/scripts/run.sh"]
     restart: always
-    hostname: artifactory
+    hostname: artifactory-oss
     environment:
-      - NODE_ID=artifactory
-      - DATABASE_URL_FILE=/run/secrets/artifactory/postgres/url
+      - NODE_ID=artifactory-oss
+      - DATABASE_URL_FILE=/run/secrets/artifactory/oss/postgres/url
       - DATABASE_USERNAME_FILE=/run/secrets/postgres/user
       - DATABASE_PASSWORD_FILE=/run/secrets/postgres/password
     ports:
@@ -63,42 +45,42 @@ services:
     volumes:
       - ./artifactory/system-template.yaml:/opt/jfrog/artifactory/templates/system-template.yaml
       - ./artifactory/run.sh:/opt/jfrog/artifactory/scripts/run.sh
-      - ./secrets/dev/artifactory/security/master.key:/opt/jfrog/artifactory/var/etc/security/master.key
-      - ./secrets/dev/artifactory/security/join.key:/opt/jfrog/artifactory/var/etc/security/join.key
-      - ./secrets/dev/artifactory/postgres/url:/run/secrets/artifactory/postgres/url
-      - ./secrets/dev/postgres:/run/secrets/postgres/
+      - ./secrets/dev/artifactory/oss/security/master.key:/opt/jfrog/artifactory/var/etc/security/master.key
+      - ./secrets/dev/artifactory/oss/security/join.key:/opt/jfrog/artifactory/var/etc/security/join.key
+      - ./secrets/dev/artifactory/oss/postgres/url:/run/secrets/artifactory/oss/postgres/url
+      - ./secrets/dev/postgres:/run/secrets/postgres
       - type: volume
-        source: jfrog_artifactory
+        source: artifactory_oss
         target: /opt/jfrog/artifactory
     depends_on:
       postgres:
         condition: service_healthy
-  container-registry:
+  artifactory-jcr:
     image: releases-docker.jfrog.io/jfrog/artifactory-jcr:7.84.14
     entrypoint: ["/opt/jfrog/artifactory/scripts/run.sh"]
     restart: always
-    hostname: container-registry
+    hostname: artifactory-jcr
     environment:
-      - NODE_ID=jcr
-      - DATABASE_URL_FILE=/run/secrets/postgres/url
+      - NODE_ID=artifactory-jcr
+      - DATABASE_URL_FILE=/run/secrets/artifactory/jcr/postgres/url
       - DATABASE_USERNAME_FILE=/run/secrets/postgres/user
       - DATABASE_PASSWORD_FILE=/run/secrets/postgres/password
     ports:
-     - 28082:8082
+     - 19092:8082
     volumes:
       - ./artifactory/system-template.yaml:/opt/jfrog/artifactory/templates/system-template.yaml
       - ./artifactory/run.sh:/opt/jfrog/artifactory/scripts/run.sh
-      - ./secrets/dev/jcr/security/master.key:/opt/jfrog/artifactory/var/etc/security/master.key
-      - ./secrets/dev/jcr/security/join.key:/opt/jfrog/artifactory/var/etc/security/join.key
-      - ./secrets/dev/jcr/postgres:/run/secrets/postgres/
+      - ./secrets/dev/artifactory/jcr/security/master.key:/opt/jfrog/artifactory/var/etc/security/master.key
+      - ./secrets/dev/artifactory/jcr/security/join.key:/opt/jfrog/artifactory/var/etc/security/join.key
+      - ./secrets/dev/artifactory/jcr/postgres/url:/run/secrets/artifactory/jcr/postgres/url
+      - ./secrets/dev/postgres:/run/secrets/postgres
       - type: volume
-        source: jfrog_container_registry
+        source: artifactory_jcr
         target: /opt/jfrog/artifactory
     depends_on:
-      postgres-jcr:
+      postgres:
         condition: service_healthy
 volumes:
   postgres_data:
-  postgres_jcr_data:
-  jfrog_artifactory:
-  jfrog_container_registry:
+  artifactory_oss:
+  artifactory_jcr:
