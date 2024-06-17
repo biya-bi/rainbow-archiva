@@ -13,13 +13,12 @@ process_sql() {
 
 create_database() {
 	local database=$1
-	local dbAlreadyExists
-	dbAlreadyExists="$(
+	local exists="$(
 		POSTGRES_DB= process_sql --dbname postgres --set db="${database}" --tuples-only <<-'EOSQL'
 			SELECT 1 FROM pg_database WHERE datname = :'db' ;
 		EOSQL
 	)"
-	if [ -z "$dbAlreadyExists" ]; then
+	if [ -z "${exists}" ]; then
 		POSTGRES_DB= process_sql --dbname postgres --set db="${database}" <<-'EOSQL'
 			CREATE DATABASE :"db" ;
 		EOSQL
