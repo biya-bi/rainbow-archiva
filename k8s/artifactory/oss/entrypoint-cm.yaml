@@ -5,6 +5,11 @@ data:
 
     set -eu
 
+    # Artifactory needs to encrypt sensitive details such as join keys and database passwords, and
+    # save those changes on the file system. Since secrets are mounted to read-only volumes, there
+    # will be read-only file system errors. To work around this, we don't directly mount secrets to
+    # the destinations expected by Artifactory. Rather, we mount them to intermediate volumes and then
+    # copy them to the target directories where Artifactory expects them.
     copySecrets() {
       local artifactory_home=/opt/jfrog/artifactory
 
