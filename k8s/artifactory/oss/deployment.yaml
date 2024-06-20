@@ -46,7 +46,7 @@ spec:
               - key: run.sh
                 path: run.sh
             name: artifactory-oss-entrypoint-cm
-            defaultMode: 0777
+            defaultMode: 0755
           name: artifactory-oss-entrypoint-cm
         - name: artifactory-oss
           persistentVolumeClaim:

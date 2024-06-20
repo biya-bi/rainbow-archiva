@@ -46,7 +46,7 @@ spec:
               - key: run.sh
                 path: run.sh
             name: artifactory-jcr-entrypoint-cm
-            defaultMode: 0777
+            defaultMode: 0755
           name: artifactory-jcr-entrypoint-cm
         - name: artifactory-jcr
           persistentVolumeClaim:
