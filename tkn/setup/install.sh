@@ -2,6 +2,9 @@
 
 ### Reference: https://tekton.dev/docs/dashboard/tutorial/
 
+script_dir=`dirname $0`
+script_path=`realpath "${script_dir}"`
+
 : '
     For any of the kubectl command executed below, you can always monitor the install with the below command:
         kubectl get pods --namespace tekton-pipelines --watch
@@ -19,3 +22,6 @@ kubectl apply --filename https://storage.googleapis.com/tekton-releases/dashboar
     to the tekton-dashboard Service on port 9097.
         kubectl port-forward -n tekton-pipelines service/tekton-dashboard 9097:9097
 '
+
+# Grant required permissions
+kubectl apply --filename "${script_path}"/permissions.yaml
