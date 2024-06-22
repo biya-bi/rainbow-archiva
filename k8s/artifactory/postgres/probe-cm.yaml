@@ -1,0 +1,16 @@
+apiVersion: v1
+data:
+  is-ready.sh: |-
+    #!/bin/bash
+
+    set -eou
+
+    user=`grep -m 1 . ${POSTGRES_USER_FILE}`
+    database=`grep -m 1 . ${POSTGRES_DB_FILE}`
+
+    psql -U "${user}" -d "${database}" -c "SELECT 1" --tuples-only
+kind: ConfigMap
+metadata:
+  labels:
+    io.kompose.service: artifactory-postgres
+  name: artifactory-postgres-probe-cm

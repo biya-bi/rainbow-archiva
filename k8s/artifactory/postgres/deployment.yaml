@@ -36,7 +36,8 @@ spec:
           livenessProbe:
             exec:
               command:
-                - pg_isready
+                - /bin/bash
+                - /run/scripts/postgres/is-ready.sh
             failureThreshold: 5
             initialDelaySeconds: 10
             periodSeconds: 10
@@ -48,6 +49,9 @@ spec:
           volumeMounts:
             - mountPath: /docker-entrypoint-initdb.d
               name: artifactory-postgres-initdb-cm
+            - mountPath: /run/scripts/postgres/is-ready.sh
+              name: artifactory-postgres-probe-cm
+              subPath: is-ready.sh
             - mountPath: /var/lib/postgresql/data
               name: artifactory-postgres-data
             - mountPath: /run/secrets/postgres
@@ -60,6 +64,10 @@ spec:
             name: artifactory-postgres-initdb-cm
             defaultMode: 0777
           name: artifactory-postgres-initdb-cm
+        - configMap:
+            name: artifactory-postgres-probe-cm
+            defaultMode: 0755
+          name: artifactory-postgres-probe-cm
         - name: artifactory-postgres-data
           persistentVolumeClaim:
             claimName: artifactory-postgres-data
