@@ -2,6 +2,13 @@
 
 ### Reference: https://tekton.dev/docs/dashboard/tutorial/
 
+: ' Specify the namespace when running this script. For example:
+        ./install.sh infra
+    Otherwise, the default namespace will be used for creating permissions
+'
+
+namespace="${1:-default}"
+
 script_dir=`dirname $0`
 script_path=`realpath "${script_dir}"`
 
@@ -24,4 +31,4 @@ kubectl apply --filename https://storage.googleapis.com/tekton-releases/dashboar
 '
 
 # Grant required permissions
-kubectl apply --filename "${script_path}"/permissions.yaml
+kubectl apply --filename "${script_path}"/permissions.yaml --namespace="${namespace}"
