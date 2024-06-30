@@ -110,7 +110,7 @@ volumes:
     persistentVolumeClaim:
       claimName: artifactory-postgres-data
   - secret:
-      secretName: artifactory-postgres-secret
+      secretName: artifactory-postgres
     name: artifactory-postgres-secret
 
 volumeMounts:

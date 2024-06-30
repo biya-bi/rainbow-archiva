@@ -99,7 +99,7 @@ volumes:
     persistentVolumeClaim:
       claimName: artifactory-oss
   - secret:
-      secretName: artifactory-oss-secret
+      secretName: artifactory-oss
     name: artifactory-oss-secret
 
 volumeMounts:

@@ -99,7 +99,7 @@ volumes:
     persistentVolumeClaim:
       claimName: artifactory-jcr
   - secret:
-      secretName: artifactory-jcr-secret
+      secretName: artifactory-jcr
     name: artifactory-jcr-secret
 
 volumeMounts:
