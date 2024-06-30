@@ -92,22 +92,22 @@ volumes:
       items:
         - key: run.sh
           path: run.sh
-      name: artifactory-oss-entrypoint-cm
+      name: artifactory-oss-entrypoint
       defaultMode: 0755
-    name: artifactory-oss-entrypoint-cm
-  - name: artifactory-oss
+    name: artifactory-oss-entrypoint
+  - name: artifactory-oss-data
     persistentVolumeClaim:
-      claimName: artifactory-oss
+      claimName: artifactory-oss-data
   - secret:
       secretName: artifactory-oss
     name: artifactory-oss-secret
 
 volumeMounts:
   - mountPath: /opt/jfrog/artifactory/scripts/run.sh
-    name: artifactory-oss-entrypoint-cm
+    name: artifactory-oss-entrypoint
     subPath: run.sh
   - mountPath: /opt/jfrog/artifactory/var
-    name: artifactory-oss
+    name: artifactory-oss-data
   - mountPath: /run/secrets/artifactory/oss
     name: artifactory-oss-secret
 

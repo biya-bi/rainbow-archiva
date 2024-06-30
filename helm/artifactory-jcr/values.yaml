@@ -92,22 +92,22 @@ volumes:
       items:
         - key: run.sh
           path: run.sh
-      name: artifactory-jcr-entrypoint-cm
+      name: artifactory-jcr-entrypoint
       defaultMode: 0755
-    name: artifactory-jcr-entrypoint-cm
-  - name: artifactory-jcr
+    name: artifactory-jcr-entrypoint
+  - name: artifactory-jcr-data
     persistentVolumeClaim:
-      claimName: artifactory-jcr
+      claimName: artifactory-jcr-data
   - secret:
       secretName: artifactory-jcr
     name: artifactory-jcr-secret
 
 volumeMounts:
   - mountPath: /opt/jfrog/artifactory/scripts/run.sh
-    name: artifactory-jcr-entrypoint-cm
+    name: artifactory-jcr-entrypoint
     subPath: run.sh
   - mountPath: /opt/jfrog/artifactory/var
-    name: artifactory-jcr
+    name: artifactory-jcr-data
   - mountPath: /run/secrets/artifactory/jcr
     name: artifactory-jcr-secret
 

@@ -99,13 +99,13 @@ autoscaling:
 
 volumes:
   - configMap:
-      name: artifactory-postgres-initdb-cm
+      name: artifactory-postgres-initdb
       defaultMode: 0755
-    name: artifactory-postgres-initdb-cm
+    name: artifactory-postgres-initdb
   - configMap:
-      name: artifactory-postgres-probe-cm
+      name: artifactory-postgres-probe
       defaultMode: 0755
-    name: artifactory-postgres-probe-cm
+    name: artifactory-postgres-probe
   - name: artifactory-postgres-data
     persistentVolumeClaim:
       claimName: artifactory-postgres-data
@@ -114,9 +114,9 @@ volumes:
     name: artifactory-postgres-secret
 
 volumeMounts:
-  - name: artifactory-postgres-initdb-cm
+  - name: artifactory-postgres-initdb
     mountPath: /docker-entrypoint-initdb.d
-  - name: artifactory-postgres-probe-cm
+  - name: artifactory-postgres-probe
     mountPath: /run/scripts/postgres/is-ready.sh     
     subPath: is-ready.sh
   - name: artifactory-postgres-data

@@ -1,7 +1,7 @@
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: artifactory-jcr-entrypoint-cm
+  name: artifactory-jcr-entrypoint
   labels:
     {{- include "artifactory-jcr.labels" . | nindent 4 }}
 data:

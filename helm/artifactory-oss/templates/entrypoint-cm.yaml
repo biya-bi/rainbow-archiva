@@ -1,7 +1,7 @@
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: artifactory-oss-entrypoint-cm
+  name: artifactory-oss-entrypoint
   labels:
     {{- include "artifactory-oss.labels" . | nindent 4 }}
 data:
